@@ -347,8 +347,16 @@ def large_walk_true_values(n_states, max_jump):
 
     return true_values.astype(float)
 
-# Step 14 - state_aggregation_features (not yet solved)
-# TODO: implement
+# Step 14 - state_aggregation_features
+def state_aggregation_features(state, n_states, n_groups):
+    # Map the state to its corresponding aggregation group.
+    group = state * n_groups // n_states
+
+    # Create a one-hot feature vector.
+    features = np.zeros(n_groups, dtype=float)
+    features[group] = 1.0
+
+    return features
 
 # Step 15 - gradient_mc_episode (not yet solved)
 # TODO: implement

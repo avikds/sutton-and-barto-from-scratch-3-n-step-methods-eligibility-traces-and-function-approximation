@@ -23,7 +23,7 @@ python scaffold.py
 - [x] **11.** td_lambda_episode
 - [x] **12.** lambda_prediction
 - [x] **13.** large_walk_true_values
-- [ ] **14.** state_aggregation_features
+- [x] **14.** state_aggregation_features
 - [ ] **15.** gradient_mc_episode
 - [ ] **16.** semi_gradient_td0_episode
 - [ ] **17.** compare_value_approximations
