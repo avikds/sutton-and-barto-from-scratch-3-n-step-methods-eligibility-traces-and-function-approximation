@@ -11,7 +11,7 @@ python scaffold.py
 ## Steps
 
 - [x] **1.** random_walk_true_values
-- [ ] **2.** random_walk_step
+- [x] **2.** random_walk_step
 - [ ] **3.** generate_random_walk_episode
 - [ ] **4.** n_step_return
 - [ ] **5.** n_step_td_episode

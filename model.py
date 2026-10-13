@@ -18,8 +18,31 @@ def random_walk_true_values(n_states):
 
     return true_values
 
-# Step 2 - random_walk_step (not yet solved)
-# TODO: implement
+# Step 2 - random_walk_step
+def random_walk_step(state, n_states, rng, max_jump=1):
+    # Decide the direction first: left with probability 0.5, otherwise right.
+    go_left = rng.random() < 0.5
+
+    # Draw the jump size only when max_jump is greater than 1.
+    if max_jump == 1:
+        jump = 1
+    else:
+        jump = int(rng.integers(1, max_jump + 1))
+
+    # Calculate the next state based on the chosen direction.
+    if go_left:
+        next_state = state - jump
+    else:
+        next_state = state + jump
+
+    # Check whether the move reaches or overshoots a terminal state.
+    if next_state < 0:
+        return (-1, -1.0, True)
+    elif next_state >= n_states:
+        return (n_states, 1.0, True)
+
+    # Non-terminal transitions have zero reward.
+    return (int(next_state), 0.0, False)
 
 # Step 3 - generate_random_walk_episode (not yet solved)
 # TODO: implement
