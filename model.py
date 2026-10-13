@@ -358,8 +358,33 @@ def state_aggregation_features(state, n_states, n_groups):
 
     return features
 
-# Step 15 - gradient_mc_episode (not yet solved)
-# TODO: implement
+# Step 15 - gradient_mc_episode
+def gradient_mc_episode(weights, states, rewards, n_states, n_groups, alpha, gamma=1.0):
+    # Copy the weights so the input array is not modified.
+    updated_weights = weights.copy()
+
+    T = len(rewards)
+
+    # Compute the complete discounted return for every time step.
+    returns = np.zeros(T, dtype=float)
+    G = 0.0
+
+    for t in range(T - 1, -1, -1):
+        G = rewards[t] + gamma * G
+        returns[t] = G
+
+    # Apply gradient Monte Carlo updates in chronological order.
+    for t in range(T):
+        # Get the one-hot state-aggregation feature vector.
+        x = state_aggregation_features(states[t], n_states, n_groups)
+
+        # Estimate the value using the current weights.
+        estimated_value = updated_weights @ x
+
+        # Update the weights using the complete return as the target.
+        updated_weights += alpha * (returns[t] - estimated_value) * x
+
+    return updated_weights
 
 # Step 16 - semi_gradient_td0_episode (not yet solved)
 # TODO: implement
