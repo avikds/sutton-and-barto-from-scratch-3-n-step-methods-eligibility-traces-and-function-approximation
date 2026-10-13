@@ -215,8 +215,27 @@ def offline_lambda_return_episode(values, states, rewards, lam, alpha, gamma=1.0
 
     return updated_values
 
-# Step 10 - update_traces (not yet solved)
-# TODO: implement
+# Step 10 - update_traces
+def update_traces(traces, state, lam, gamma, mode):
+    # Validate the trace mode before modifying the copied array.
+    if mode not in ("accumulating", "replacing"):
+        raise ValueError(
+            "mode must be 'accumulating' or 'replacing'"
+        )
+
+    # Copy the input to ensure it remains unchanged.
+    updated_traces = traces.copy()
+
+    # Decay all eligibility traces.
+    updated_traces *= gamma * lam
+
+    # Update the eligibility trace for the current state.
+    if mode == "accumulating":
+        updated_traces[state] += 1.0
+    else:  # mode == "replacing"
+        updated_traces[state] = 1.0
+
+    return updated_traces
 
 # Step 11 - td_lambda_episode (not yet solved)
 # TODO: implement
