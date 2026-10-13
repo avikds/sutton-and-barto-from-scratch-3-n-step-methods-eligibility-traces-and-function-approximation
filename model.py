@@ -530,8 +530,18 @@ def tile_code(position, velocity, n_tilings, tiles_per_dim):
 
     return active_tiles
 
-# Step 20 - tile_epsilon_greedy (not yet solved)
-# TODO: implement
+# Step 20 - tile_epsilon_greedy
+def tile_epsilon_greedy(weights, active_tiles, epsilon, rng):
+    # Explore: select a random action with probability epsilon.
+    if rng.random() < epsilon:
+        return int(rng.integers(0, weights.shape[0]))
+
+    # Exploit: sum the weights of active tiles for each action.
+    action_values = weights[:, active_tiles].sum(axis=1)
+
+    # np.argmax selects the first maximum, breaking ties
+    # in favor of the smallest action index.
+    return int(np.argmax(action_values))
 
 # Step 21 - sarsa_lambda_episode (not yet solved)
 # TODO: implement
