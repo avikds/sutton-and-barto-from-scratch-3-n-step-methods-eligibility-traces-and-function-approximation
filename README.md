@@ -30,7 +30,7 @@ python scaffold.py
 - [x] **18.** mountain_car_step
 - [x] **19.** tile_code
 - [x] **20.** tile_epsilon_greedy
-- [ ] **21.** sarsa_lambda_episode
+- [x] **21.** sarsa_lambda_episode
 - [ ] **22.** mountain_car_training
 
 ---

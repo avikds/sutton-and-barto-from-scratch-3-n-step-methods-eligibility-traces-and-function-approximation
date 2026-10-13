@@ -543,8 +543,66 @@ def tile_epsilon_greedy(weights, active_tiles, epsilon, rng):
     # in favor of the smallest action index.
     return int(np.argmax(action_values))
 
-# Step 21 - sarsa_lambda_episode (not yet solved)
-# TODO: implement
+# Step 21 - sarsa_lambda_episode
+def sarsa_lambda_episode(weights, n_tilings, tiles_per_dim, lam, alpha, gamma, epsilon, rng, max_steps):
+    # Copy the input weights so the original array remains unchanged.
+    updated_weights = weights.copy()
+
+    # Initialize the car's position and velocity.
+    position = float(rng.uniform(-0.6, -0.4))
+    velocity = 0.0
+
+    # Initialize replacing eligibility traces with the same shape as weights.
+    traces = np.zeros_like(updated_weights, dtype=float)
+
+    # Encode the initial state and select the first action.
+    tiles = tile_code(position, velocity, n_tilings, tiles_per_dim)
+    action = tile_epsilon_greedy(updated_weights, tiles, epsilon, rng)
+
+    # Run the episode for at most max_steps time steps.
+    for step in range(1, max_steps + 1):
+        # Apply the selected action to the Mountain Car environment.
+        next_position, next_velocity, reward, done = mountain_car_step(
+            position, velocity, action
+        )
+
+        # Compute the TD error using the current action-value estimate.
+        current_q = updated_weights[action, tiles].sum()
+        delta = reward - current_q
+
+        # Decay all eligibility traces and replace the active traces
+        # associated with the current action and state.
+        traces *= gamma * lam
+        traces[action, tiles] = 1.0
+
+        # If the goal is reached, there is no next-state bootstrap term.
+        if done:
+            updated_weights += alpha * delta * traces
+            return updated_weights, step
+
+        # Encode the next state and select the next action.
+        next_tiles = tile_code(
+            next_position, next_velocity, n_tilings, tiles_per_dim
+        )
+        next_action = tile_epsilon_greedy(
+            updated_weights, next_tiles, epsilon, rng
+        )
+
+        # Add the next action-value estimate to the TD error.
+        next_q = updated_weights[next_action, next_tiles].sum()
+        delta += gamma * next_q
+
+        # Update all action-tile weights using the eligibility traces.
+        updated_weights += alpha * delta * traces
+
+        # Advance to the next state-action pair.
+        position = next_position
+        velocity = next_velocity
+        tiles = next_tiles
+        action = next_action
+
+    # Return max_steps if the episode ends without reaching the goal.
+    return updated_weights, max_steps
 
 # Step 22 - mountain_car_training (not yet solved)
 # TODO: implement
