@@ -310,8 +310,42 @@ def lambda_prediction(n_states, lam, alpha, n_episodes, method, rng, gamma=1.0):
 
     return values, rms_errors
 
-# Step 13 - large_walk_true_values (not yet solved)
-# TODO: implement
+# Step 13 - large_walk_true_values
+def large_walk_true_values(n_states, max_jump):
+    # Transition matrix between non-terminal states.
+    P = np.zeros((n_states, n_states), dtype=float)
+
+    # Expected immediate reward for each non-terminal state.
+    r = np.zeros(n_states, dtype=float)
+
+    # Every direction-jump combination has equal probability.
+    probability = 0.5 / max_jump
+
+    for state in range(n_states):
+        for jump in range(1, max_jump + 1):
+            # Consider moving left.
+            next_state = state - jump
+
+            if next_state < 0:
+                # Left terminal: reward -1.
+                r[state] -= probability
+            else:
+                P[state, next_state] += probability
+
+            # Consider moving right.
+            next_state = state + jump
+
+            if next_state >= n_states:
+                # Right terminal: reward +1.
+                r[state] += probability
+            else:
+                P[state, next_state] += probability
+
+    # Solve the Bellman equation: (I - P) v = r.
+    identity = np.eye(n_states, dtype=float)
+    true_values = np.linalg.solve(identity - P, r)
+
+    return true_values.astype(float)
 
 # Step 14 - state_aggregation_features (not yet solved)
 # TODO: implement
