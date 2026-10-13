@@ -21,7 +21,7 @@ python scaffold.py
 - [x] **9.** offline_lambda_return_episode
 - [x] **10.** update_traces
 - [x] **11.** td_lambda_episode
-- [ ] **12.** lambda_prediction
+- [x] **12.** lambda_prediction
 - [ ] **13.** large_walk_true_values
 - [ ] **14.** state_aggregation_features
 - [ ] **15.** gradient_mc_episode

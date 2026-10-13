@@ -274,8 +274,41 @@ def td_lambda_episode(values, states, rewards, lam, alpha, gamma, mode):
 
     return updated_values
 
-# Step 12 - lambda_prediction (not yet solved)
-# TODO: implement
+# Step 12 - lambda_prediction
+def lambda_prediction(n_states, lam, alpha, n_episodes, method, rng, gamma=1.0):
+    # Validate the selected learning method.
+    if method not in ("offline", "accumulating", "replacing"):
+        raise ValueError(
+            "method must be 'offline', 'accumulating', or 'replacing'"
+        )
+
+    # Initialize state values and calculate the exact true values.
+    values = np.zeros(n_states, dtype=float)
+    true_values = random_walk_true_values(n_states)
+
+    # Store RMS error after each episode.
+    rms_errors = np.zeros(n_episodes, dtype=float)
+
+    for episode in range(n_episodes):
+        # Generate one complete random-walk trajectory.
+        states, rewards = generate_random_walk_episode(n_states, rng)
+
+        # Apply the selected lambda-return or eligibility-trace method.
+        if method == "offline":
+            values = offline_lambda_return_episode(
+                values, states, rewards, lam, alpha, gamma
+            )
+        else:
+            values = td_lambda_episode(
+                values, states, rewards, lam, alpha, gamma, method
+            )
+
+        # Evaluate the updated estimates against the true state values.
+        rms_errors[episode] = np.sqrt(
+            np.mean((values - true_values) ** 2)
+        )
+
+    return values, rms_errors
 
 # Step 13 - large_walk_true_values (not yet solved)
 # TODO: implement
