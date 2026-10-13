@@ -170,16 +170,16 @@ def n_step_parameter_sweep(n_states, ns, alphas, n_episodes, n_runs, seed):
 # Step 8 - lambda_return
 def lambda_return(rewards, states, t, lam, values, gamma=1.0):
     T = len(rewards)
-    G_lambda = 0.0
 
-    # Combine the n-step returns for n = 1, ..., T-t-1.
+    # The full return is the Monte Carlo return, with no bootstrap term.
+    G_full = n_step_return(rewards, states, t, T - t, values, gamma)
+
+    G_lambda = (lam ** (T - t - 1)) * G_full
+
+    # Add the weighted n-step returns for shorter horizons.
     for n in range(1, T - t):
         G_n = n_step_return(rewards, states, t, n, values, gamma)
         G_lambda += (1.0 - lam) * (lam ** (n - 1)) * G_n
-
-    # Add the full Monte Carlo return, weighted by lam ** (T-t-1).
-    G_full = n_step_return(rewards, states, t, T - t, values, gamma)
-    G_lambda += (lam ** (T - t - 1)) * G_full
 
     return float(G_lambda)
 
