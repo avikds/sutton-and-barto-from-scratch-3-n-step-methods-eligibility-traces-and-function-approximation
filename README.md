@@ -18,7 +18,7 @@ python scaffold.py
 - [x] **6.** n_step_td_prediction
 - [x] **7.** n_step_parameter_sweep
 - [x] **8.** lambda_return
-- [ ] **9.** offline_lambda_return_episode
+- [x] **9.** offline_lambda_return_episode
 - [ ] **10.** update_traces
 - [ ] **11.** td_lambda_episode
 - [ ] **12.** lambda_prediction

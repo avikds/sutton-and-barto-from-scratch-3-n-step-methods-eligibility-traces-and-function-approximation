@@ -183,8 +183,37 @@ def lambda_return(rewards, states, t, lam, values, gamma=1.0):
 
     return float(G_lambda)
 
-# Step 9 - offline_lambda_return_episode (not yet solved)
-# TODO: implement
+# Step 9 - offline_lambda_return_episode
+def offline_lambda_return_episode(values, states, rewards, lam, alpha, gamma=1.0):
+    # Preserve the original values and use them to compute all targets.
+    updated_values = values.copy()
+    T = len(rewards)
+    targets = np.zeros(T, dtype=float)
+
+    # Compute lambda-return targets backward using the values at the
+    # start of the episode, before applying any updates.
+    G = 0.0
+
+    for t in range(T - 1, -1, -1):
+        if t == T - 1:
+            # The episode has terminated, so the terminal value is zero.
+            G = float(rewards[t])
+        else:
+            next_state_value = values[states[t + 1]]
+            G = rewards[t] + gamma * (
+                (1.0 - lam) * next_state_value + lam * G
+            )
+
+        targets[t] = G
+
+    # Apply updates in chronological order using the precomputed targets.
+    for t in range(T):
+        state = states[t]
+        updated_values[state] += alpha * (
+            targets[t] - updated_values[state]
+        )
+
+    return updated_values
 
 # Step 10 - update_traces (not yet solved)
 # TODO: implement
