@@ -505,8 +505,30 @@ def mountain_car_step(position, velocity, action):
 
     return float(position), float(velocity), reward, bool(done)
 
-# Step 19 - tile_code (not yet solved)
-# TODO: implement
+# Step 19 - tile_code
+def tile_code(position, velocity, n_tilings, tiles_per_dim):
+    # Scale position and velocity to tile coordinates.
+    pos_scaled = (position + 1.2) / 1.7 * tiles_per_dim
+    vel_scaled = (velocity + 0.07) / 0.14 * tiles_per_dim
+
+    # Each tiling uses a (tiles_per_dim + 1) x (tiles_per_dim + 1) grid.
+    width = tiles_per_dim + 1
+
+    # Store the active tile index for each tiling.
+    active_tiles = np.zeros(n_tilings, dtype=int)
+
+    for i in range(n_tilings):
+        # Offset both coordinates for this tiling.
+        offset = i / n_tilings
+
+        # Calculate tile coordinates, clipping them to valid grid bounds.
+        px = min(int(np.floor(pos_scaled + offset)), tiles_per_dim)
+        vx = min(int(np.floor(vel_scaled + offset)), tiles_per_dim)
+
+        # Assign each tiling its own block of feature indices.
+        active_tiles[i] = i * width * width + px * width + vx
+
+    return active_tiles
 
 # Step 20 - tile_epsilon_greedy (not yet solved)
 # TODO: implement

@@ -28,7 +28,7 @@ python scaffold.py
 - [x] **16.** semi_gradient_td0_episode
 - [x] **17.** compare_value_approximations
 - [x] **18.** mountain_car_step
-- [ ] **19.** tile_code
+- [x] **19.** tile_code
 - [ ] **20.** tile_epsilon_greedy
 - [ ] **21.** sarsa_lambda_episode
 - [ ] **22.** mountain_car_training
