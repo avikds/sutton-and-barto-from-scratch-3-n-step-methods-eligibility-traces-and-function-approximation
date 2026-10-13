@@ -44,8 +44,36 @@ def random_walk_step(state, n_states, rng, max_jump=1):
     # Non-terminal transitions have zero reward.
     return (int(next_state), 0.0, False)
 
-# Step 3 - generate_random_walk_episode (not yet solved)
-# TODO: implement
+# Step 3 - generate_random_walk_episode
+def generate_random_walk_episode(n_states, rng, max_jump=1):
+    # Start at the centre non-terminal state.
+    state = n_states // 2
+
+    # Store the visited non-terminal states and rewards.
+    states = []
+    rewards = []
+
+    # Continue until the walk reaches a terminal state.
+    while True:
+        # Record the current state; never store the terminal state.
+        states.append(int(state))
+
+        # Take one transition using the previously implemented function.
+        next_state, reward, done = random_walk_step(
+            state, n_states, rng, max_jump
+        )
+
+        # Store the reward received when leaving the current state.
+        rewards.append(float(reward))
+
+        # Stop after recording the terminal transition's reward.
+        if done:
+            break
+
+        # Move to the next non-terminal state.
+        state = next_state
+
+    return states, rewards
 
 # Step 4 - n_step_return (not yet solved)
 # TODO: implement
