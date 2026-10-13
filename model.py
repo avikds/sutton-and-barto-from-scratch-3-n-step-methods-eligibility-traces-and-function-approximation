@@ -482,8 +482,28 @@ def compare_value_approximations(
         "td_rms": td_rms
     }
 
-# Step 18 - mountain_car_step (not yet solved)
-# TODO: implement
+# Step 18 - mountain_car_step
+def mountain_car_step(position, velocity, action):
+    # Update velocity using the Mountain Car dynamics.
+    velocity = velocity + 0.001 * (action - 1) - 0.0025 * np.cos(3 * position)
+
+    # Clip velocity to its permitted range.
+    velocity = float(np.clip(velocity, -0.07, 0.07))
+
+    # Update position using the new velocity.
+    position = float(np.clip(position + velocity, -1.2, 0.5))
+
+    # The car cannot move left beyond the left boundary.
+    if position == -1.2:
+        velocity = 0.0
+
+    # Each time step incurs a reward of -1.
+    reward = -1.0
+
+    # The episode ends when the car reaches the goal.
+    done = position >= 0.5
+
+    return float(position), float(velocity), reward, bool(done)
 
 # Step 19 - tile_code (not yet solved)
 # TODO: implement
