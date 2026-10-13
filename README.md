@@ -15,7 +15,7 @@ python scaffold.py
 - [x] **3.** generate_random_walk_episode
 - [x] **4.** n_step_return
 - [x] **5.** n_step_td_episode
-- [ ] **6.** n_step_td_prediction
+- [x] **6.** n_step_td_prediction
 - [ ] **7.** n_step_parameter_sweep
 - [ ] **8.** lambda_return
 - [ ] **9.** offline_lambda_return_episode

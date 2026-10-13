@@ -113,8 +113,32 @@ def n_step_td_episode(values, states, rewards, n, alpha, gamma=1.0):
 
     return updated_values
 
-# Step 6 - n_step_td_prediction (not yet solved)
-# TODO: implement
+# Step 6 - n_step_td_prediction
+def n_step_td_prediction(n_states, n, alpha, n_episodes, rng, gamma=1.0):
+    # Initialize state-value estimates to zero.
+    values = np.zeros(n_states, dtype=float)
+
+    # Calculate the exact state values for RMS error evaluation.
+    true_values = random_walk_true_values(n_states)
+
+    # Store the RMS error after each episode.
+    rms_errors = np.zeros(n_episodes, dtype=float)
+
+    for episode in range(n_episodes):
+        # Generate one complete random-walk episode.
+        states, rewards = generate_random_walk_episode(n_states, rng)
+
+        # Update the estimates using n-step TD prediction.
+        values = n_step_td_episode(
+            values, states, rewards, n, alpha, gamma
+        )
+
+        # Measure prediction accuracy after this episode.
+        rms_errors[episode] = np.sqrt(
+            np.mean((values - true_values) ** 2)
+        )
+
+    return values, rms_errors
 
 # Step 7 - n_step_parameter_sweep (not yet solved)
 # TODO: implement
