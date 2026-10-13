@@ -604,6 +604,36 @@ def sarsa_lambda_episode(weights, n_tilings, tiles_per_dim, lam, alpha, gamma, e
     # Return max_steps if the episode ends without reaching the goal.
     return updated_weights, max_steps
 
-# Step 22 - mountain_car_training (not yet solved)
-# TODO: implement
+# Step 22 - mountain_car_training
+def mountain_car_training(
+    n_episodes, n_tilings, tiles_per_dim,
+    lam, alpha, gamma, epsilon, seed, max_steps
+):
+    # Initialize one random number generator for the entire training run.
+    rng = np.random.default_rng(seed)
+
+    # Allocate zero-initialized weights for the three possible actions.
+    n_features = n_tilings * (tiles_per_dim + 1) ** 2
+    weights = np.zeros((3, n_features), dtype=float)
+
+    # Store the number of steps taken in each episode.
+    steps_per_episode = np.zeros(n_episodes, dtype=int)
+
+    # Train Sarsa(lambda), carrying learned weights between episodes.
+    for episode in range(n_episodes):
+        weights, n_steps = sarsa_lambda_episode(
+            weights,
+            n_tilings,
+            tiles_per_dim,
+            lam,
+            alpha,
+            gamma,
+            epsilon,
+            rng,
+            max_steps
+        )
+
+        steps_per_episode[episode] = n_steps
+
+    return weights, steps_per_episode
 
