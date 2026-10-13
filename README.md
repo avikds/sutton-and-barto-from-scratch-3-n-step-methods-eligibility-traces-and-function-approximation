@@ -26,7 +26,7 @@ python scaffold.py
 - [x] **14.** state_aggregation_features
 - [x] **15.** gradient_mc_episode
 - [x] **16.** semi_gradient_td0_episode
-- [ ] **17.** compare_value_approximations
+- [x] **17.** compare_value_approximations
 - [ ] **18.** mountain_car_step
 - [ ] **19.** tile_code
 - [ ] **20.** tile_epsilon_greedy

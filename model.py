@@ -424,8 +424,63 @@ def semi_gradient_td0_episode(weights, states, rewards, n_states, n_groups, alph
 
     return updated_weights
 
-# Step 17 - compare_value_approximations (not yet solved)
-# TODO: implement
+# Step 17 - compare_value_approximations
+def compare_value_approximations(
+    n_states, n_groups, max_jump,
+    alpha_mc, alpha_td, n_episodes, seed
+):
+    # Initialize the random number generator and compute exact values.
+    rng = np.random.default_rng(seed)
+    true_values = large_walk_true_values(n_states, max_jump)
+
+    # Initialize the state-aggregation weights for both methods.
+    mc_weights = np.zeros(n_groups, dtype=float)
+    td_weights = np.zeros(n_groups, dtype=float)
+
+    # Train both methods using exactly the same episodes.
+    for episode in range(n_episodes):
+        states, rewards = generate_random_walk_episode(
+            n_states, rng, max_jump
+        )
+
+        # Gradient Monte Carlo update.
+        mc_weights = gradient_mc_episode(
+            mc_weights,
+            states,
+            rewards,
+            n_states,
+            n_groups,
+            alpha_mc
+        )
+
+        # Semi-gradient TD(0) update using the same trajectory.
+        td_weights = semi_gradient_td0_episode(
+            td_weights,
+            states,
+            rewards,
+            n_states,
+            n_groups,
+            alpha_td
+        )
+
+    # Map each state's index to its state-aggregation group.
+    state_indices = np.arange(n_states)
+    group_indices = state_indices * n_groups // n_states
+
+    # Obtain the estimated value of every non-terminal state.
+    mc_values = mc_weights[group_indices].astype(float)
+    td_values = td_weights[group_indices].astype(float)
+
+    # Calculate RMS errors against the exact state values.
+    mc_rms = float(np.sqrt(np.mean((mc_values - true_values) ** 2)))
+    td_rms = float(np.sqrt(np.mean((td_values - true_values) ** 2)))
+
+    return {
+        "mc_values": mc_values,
+        "td_values": td_values,
+        "mc_rms": mc_rms,
+        "td_rms": td_rms
+    }
 
 # Step 18 - mountain_car_step (not yet solved)
 # TODO: implement
