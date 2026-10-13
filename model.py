@@ -75,8 +75,20 @@ def generate_random_walk_episode(n_states, rng, max_jump=1):
 
     return states, rewards
 
-# Step 4 - n_step_return (not yet solved)
-# TODO: implement
+# Step 4 - n_step_return
+def n_step_return(rewards, states, t, n, values, gamma=1.0):
+    T = len(rewards)
+    G = 0.0
+
+    # Sum up to n discounted rewards, stopping at the episode's end.
+    for k in range(t, min(t + n, T)):
+        G += (gamma ** (k - t)) * rewards[k]
+
+    # Bootstrap only if the full n-step horizon remains within the episode.
+    if t + n < T:
+        G += (gamma ** n) * values[states[t + n]]
+
+    return float(G)
 
 # Step 5 - n_step_td_episode (not yet solved)
 # TODO: implement
