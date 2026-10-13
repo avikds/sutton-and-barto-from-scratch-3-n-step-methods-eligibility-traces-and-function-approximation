@@ -237,8 +237,42 @@ def update_traces(traces, state, lam, gamma, mode):
 
     return updated_traces
 
-# Step 11 - td_lambda_episode (not yet solved)
-# TODO: implement
+# Step 11 - td_lambda_episode
+def td_lambda_episode(values, states, rewards, lam, alpha, gamma, mode):
+    # Copy the input values so the original array remains unchanged.
+    updated_values = values.copy()
+
+    # Initialize all eligibility traces to zero.
+    traces = np.zeros_like(updated_values, dtype=float)
+
+    T = len(rewards)
+
+    # Process each transition in chronological order.
+    for t in range(T):
+        state = states[t]
+
+        # The terminal state's value is zero.
+        if t + 1 < T:
+            next_state_value = updated_values[states[t + 1]]
+        else:
+            next_state_value = 0.0
+
+        # Compute the TD error using the current value estimates.
+        delta = (
+            rewards[t]
+            + gamma * next_state_value
+            - updated_values[state]
+        )
+
+        # Decay traces and mark the current state.
+        traces = update_traces(
+            traces, state, lam, gamma, mode
+        )
+
+        # Update every state's value in proportion to its eligibility trace.
+        updated_values += alpha * delta * traces
+
+    return updated_values
 
 # Step 12 - lambda_prediction (not yet solved)
 # TODO: implement
