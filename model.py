@@ -90,8 +90,28 @@ def n_step_return(rewards, states, t, n, values, gamma=1.0):
 
     return float(G)
 
-# Step 5 - n_step_td_episode (not yet solved)
-# TODO: implement
+# Step 5 - n_step_td_episode
+def n_step_td_episode(values, states, rewards, n, alpha, gamma=1.0):
+    # Copy the input so the original value array remains unchanged.
+    updated_values = values.copy()
+
+    T = len(rewards)
+
+    # Process each visited state in chronological order.
+    for t in range(T):
+        # Compute the n-step return using the current values,
+        # including updates made at earlier time steps.
+        G = n_step_return(
+            rewards, states, t, n, updated_values, gamma
+        )
+
+        # Apply the n-step TD prediction update.
+        state = states[t]
+        updated_values[state] += alpha * (
+            G - updated_values[state]
+        )
+
+    return updated_values
 
 # Step 6 - n_step_td_prediction (not yet solved)
 # TODO: implement
