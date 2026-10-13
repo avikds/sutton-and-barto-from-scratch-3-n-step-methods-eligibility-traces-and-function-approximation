@@ -140,11 +140,48 @@ def n_step_td_prediction(n_states, n, alpha, n_episodes, rng, gamma=1.0):
 
     return values, rms_errors
 
-# Step 7 - n_step_parameter_sweep (not yet solved)
-# TODO: implement
+# Step 7 - n_step_parameter_sweep
+def n_step_parameter_sweep(n_states, ns, alphas, n_episodes, n_runs, seed):
+    # Store the average learning error for every (n, alpha) combination.
+    errors = np.zeros((len(ns), len(alphas)), dtype=float)
 
-# Step 8 - lambda_return (not yet solved)
-# TODO: implement
+    for i, n in enumerate(ns):
+        for j, alpha in enumerate(alphas):
+            run_errors = []
+
+            for run in range(n_runs):
+                # Use the same seed for each parameter combination
+                # within a given run, ensuring comparable episodes.
+                rng = np.random.default_rng(seed + run)
+
+                # Run n-step TD prediction for the specified parameters.
+                _, rms_errors = n_step_td_prediction(
+                    n_states, n, alpha, n_episodes, rng
+                )
+
+                # Average the RMS errors across episodes for this run.
+                run_errors.append(np.mean(rms_errors))
+
+            # Average the episode-averaged errors across independent runs.
+            errors[i, j] = np.mean(run_errors)
+
+    return errors
+
+# Step 8 - lambda_return
+def lambda_return(rewards, states, t, lam, values, gamma=1.0):
+    T = len(rewards)
+    G_lambda = 0.0
+
+    # Combine the n-step returns for n = 1, ..., T-t-1.
+    for n in range(1, T - t):
+        G_n = n_step_return(rewards, states, t, n, values, gamma)
+        G_lambda += (1.0 - lam) * (lam ** (n - 1)) * G_n
+
+    # Add the full Monte Carlo return, weighted by lam ** (T-t-1).
+    G_full = n_step_return(rewards, states, t, T - t, values, gamma)
+    G_lambda += (lam ** (T - t - 1)) * G_full
+
+    return float(G_lambda)
 
 # Step 9 - offline_lambda_return_episode (not yet solved)
 # TODO: implement
