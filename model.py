@@ -386,8 +386,43 @@ def gradient_mc_episode(weights, states, rewards, n_states, n_groups, alpha, gam
 
     return updated_weights
 
-# Step 16 - semi_gradient_td0_episode (not yet solved)
-# TODO: implement
+# Step 16 - semi_gradient_td0_episode
+def semi_gradient_td0_episode(weights, states, rewards, n_states, n_groups, alpha, gamma=1.0):
+    # Copy the weights so the input array remains unchanged.
+    updated_weights = weights.copy()
+
+    T = len(rewards)
+
+    # Process each transition in chronological order.
+    for t in range(T):
+        # Feature vector for the current state.
+        x = state_aggregation_features(
+            states[t], n_states, n_groups
+        )
+
+        # Estimate the next state's value, or zero at termination.
+        if t + 1 < T:
+            next_features = state_aggregation_features(
+                states[t + 1], n_states, n_groups
+            )
+            next_value = updated_weights @ next_features
+        else:
+            next_value = 0.0
+
+        # Estimate the current state's value using the latest weights.
+        current_value = updated_weights @ x
+
+        # Compute the one-step TD error.
+        delta = (
+            rewards[t]
+            + gamma * next_value
+            - current_value
+        )
+
+        # Apply the semi-gradient TD(0) weight update.
+        updated_weights += alpha * delta * x
+
+    return updated_weights
 
 # Step 17 - compare_value_approximations (not yet solved)
 # TODO: implement
